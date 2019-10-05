@@ -1,0 +1,174 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+emi<-read.table("Emi-CRF.txt", sep = '\t', header = T)
+```
+```{r}
+emiext<-emi[c(1:5,7),2:5]
+transf<-emiext[!is.na(emiext)]
+transf
+etiquetas<-rep(c("F1","Precision","Recall","Score" ), each = 6)
+corrida<-rep(c('1','2','3','4','5','Mean'), times = 4 )
+emidat<-cbind.data.frame(transf,etiquetas,corrida)
+require(ggplot2)
+emigraf<-ggplot(emidat,aes(x= etiquetas,y=as.numeric(transf),group=corrida,color=corrida))+
+  scale_fill_discrete(name="Simulacion")+
+  geom_point()+
+  geom_line() +
+#theme(legend.title=element_text("Simulacion"))+ 
+scale_color_manual(values=c("mediumorchid3","mediumorchid2","mediumpurple","mediumpurple4","mediumorchid1","deepskyblue"))
+emigraf
+```
+
+
+
+```{r}
+c1<-read.table("c1datos.tsv", header =T, sep='\t')
+prc1<-c1[c1$Simulacion=="Promedio",]
+prc1$Version<-as.factor(prc1$Version)
+dev.new()
+grafc1<- ggplot(prc1,aes(x= prc1$Val.Par,y=prc1$Valor,group=Version,color=Version)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~prc1$Resultado, scales='free_y') +
+  theme_bw() +
+  theme_update(plot.title = element_text(hjust = 0.5))+
+  labs(x='Valor de parametro C1', y ='Valor', caption = 'Source data: SimulacionesDeParametrosCRF.txt')+
+  ggtitle("Modificaciones de parámetro C1 entre versiones 2 y 3")
+ggsave("Modificaciones de parámetro C1 entre versiones 2 y 3.jpg", grafc1)
+grafc1
+```
+
+```{r}
+c1v2<-c1[c1$Version==2,]
+grafc1v2<- ggplot(c1v2,aes(x=c1v2$Val.Par,y=c1v2$Valor,group=Simulacion,color=Simulacion)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~Resultado, scales='free_y') +
+  theme_update(plot.title = element_text(hjust = 0.5))+
+  ggtitle("Modificaciones en C1 en versión 2")+
+  labs(x='Valor de parametro C1', y ='Valor', caption = 'Source data: SimulacionesDeParametrosCRF.txt')+
+  scale_color_manual(values=c("mediumorchid3","mediumorchid2","mediumpurple","mediumpurple4","mediumorchid1","deepskyblue"))
+ggsave("Modificaciones en C1 en version 2.jpg", grafc1v2)7
+grafc1v2
+```
+
+
+```{r}
+c1v3<-c1[c1$Version==3,]
+grafc1v3<- ggplot(c1v3,aes(x=c1v3$Val.Par,y=c1v3$Valor,group=Simulacion,color=Simulacion)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~Resultado, scales='free_y') +
+  ggtitle("Modificaciones en C1 en CRF versión 3")+
+  theme_update(plot.title = element_text(hjust = 0.5))+
+  labs(x='Valor de parametro C1', y ='Valor', caption = 'Source data: SimulacionesDeParametrosCRF.txt')+
+  scale_color_manual(values=c("mediumorchid3","mediumorchid2","mediumpurple","mediumpurple4","darkorchid","deepskyblue"))
+ggsave("Modificaciones en C1 en CRF versión 3.jpg", grafc1v3)
+grafc1v3
+```
+
+```{r}
+c2<-read.table("c2datos.tsv", header =T, sep='\t')
+c2v2<-c2[c2$Version==2,]
+grafc2v2<- ggplot(c2v2,aes(x=c2v2$Val.Par,y=c2v2$Valor,group=Simulacion,color=Simulacion)) +
+  geom_point() +
+  geom_line() +
+  theme_update(plot.title = element_text(hjust = 0.5))+
+  facet_wrap(~Resultado, scales='free_y') +
+  ggtitle("Modificaciones en C2 en versión 2")+
+  labs(x='Valor de parametro C2', y ='Valor', caption = 'Source data: SimulacionesDeParametrosCRF.txt')+
+  scale_color_manual(values=c("mediumorchid3","mediumorchid2","mediumpurple","mediumpurple4","mediumorchid1","deepskyblue"))
+ggsave("Modificaciones en C2 en versión 2.jpg", grafc2v2)
+grafc2v2
+```
+
+```{r}
+c2v3<-c2[c2$Version==3,]
+grafc2v3<- ggplot(c2v3,aes(x=c2v3$Val.Par,y=c2v3$Valor,group=Simulacion,color=Simulacion)) +
+  geom_point() +
+  geom_line() +
+  theme_update(plot.title = element_text(hjust = 0.5))+
+  ggtitle("Modificaciones en C2 en versión 3")+
+  facet_wrap(~Resultado, scales='free_y') +
+  labs(x='Valor de parametro C2', y ='Valor', caption = 'Source data: SimulacionesDeParametrosCRF.txt')+
+  scale_color_manual(values=c("mediumorchid3","mediumorchid2","mediumpurple","mediumpurple4","mediumorchid1","deepskyblue"))
+ggsave("Modificaciones en C2 en versión 3.jpg", grafc2v3)
+grafc2v3
+```
+
+
+```{r}
+prc2<-c2[c2$Simulacion=="Promedio",]
+prc2$Version<-as.factor(prc2$Version)
+grafc2<- ggplot(prc2,aes(x= prc2$Val.Par,y=prc2$Valor,group=Version,color=Version)) +
+  geom_point() +
+  geom_line() +
+  theme_update(plot.title = element_text(hjust = 0.5))+
+  facet_wrap(~prc2$Resultado, scales='free_y') +
+  ggtitle("Comparación de modificaciones de C2 en versión 2 y 3")+
+  labs(x='Valor de parametro C2', y ='Valor', caption = 'Source data: SimulacionesDeParametrosCRF.txt')
+ggsave("Comparación de modificaciones de C2 en versión 2 y 3.jpg", grafc2)
+grafc2
+```
+
+```{r}
+
+it<-read.table("maxIT.tsv", header =T, sep='\t')
+itv2<-itv2<-it[it$Version==2,]
+grafitv2<- ggplot(itv2,aes(x=itv2$Val.Par,y=itv2$Valor,group=Simulacion,color=Simulacion)) +
+  geom_point() +
+  geom_line() +
+  theme_update(plot.title = element_text(hjust = 0.5))+
+  facet_wrap(~Resultado, scales='free_y') +
+  ggtitle("Modificaciones en número máximo de iteraciones en versión 2")+
+  labs(x='Numero maximo de iteraciones', y ='Valor', caption = 'Source data: SimulacionesDeParametrosCRF.txt')+
+  scale_color_manual(values=c("mediumorchid3","mediumorchid2","mediumpurple","mediumpurple4","mediumorchid1","deepskyblue"))
+ggsave("Modificaciones en número máximo de iteraciones en versión 2.jpg", grafitv2)
+grafitv2
+```
+
+```{r}
+itv3<-itv3<-it[it$Version==3,]
+grafitv3<- ggplot(itv3,aes(x=itv3$Val.Par,y=itv3$Valor,group=Simulacion,color=Simulacion)) +
+  geom_point() +
+  geom_line() +
+theme_update(plot.title = element_text(hjust = 0.5))+
+  ggtitle("Modificaciones en número máximo de iteraciones en versión 3")+
+  facet_wrap(~Resultado, scales='free_y') +
+  labs(x='Numero maximo de iteraciones', y ='Valor', caption = 'Source data: SimulacionesDeParametrosCRF.txt')+
+  scale_color_manual(values=c("mediumorchid3","mediumorchid3","mediumpurple","mediumpurple4","mediumorchid1","deepskyblue"))
+ggsave("Modificaciones en numero maximo de iteraciones en version 3.jpg",grafitv3)
+grafitv3
+```
+
+```{r}
+prit<-it[it$Simulacion=="Promedio",]
+grafit<- ggplot(prit,aes(x= prit$Val.Par,y=prit$Valor,group=prit$Version,color=as.factor(prit$Version))) +
+  geom_point() +
+  geom_line() +
+  theme_update(plot.title = element_text(hjust = 0.5))+
+  facet_wrap(~prit$Resultado, scales='free_y') +
+  ggtitle("Comparación de número máximo de iteraciones entre versión 2 y 3")+
+  theme(legend.title = element_blank())+
+  labs(x='Numero maximo de iteraciones', y ='Valor', caption = 'Source data: SimulacionesDeParametrosCRF.txt')
+ggsave("Comparacion de numero maximo de iteraciones entre version 2 y 3.jpg", grafit)
+grafit
+```
+
+```{r}
+presicionv<-tapply(prit$Valor,prit$Resultado=="Presicion","[")
+presicionp<-tapply(prit$Val.Par,prit$Resultado=="Presicion","[")
+correlacion<-as.data.frame(c(presicionp,presicionv))
+colnames(correlacion)<-c("presicionp","presicionv")
+regr<-lm(presicionv~presicionp,correlacion)
+summary(regr,corr=T)
+shapiro.test(resid(regr))
+qqnorm(resid(regr))
+#plot(regr)
+```
